@@ -2,13 +2,13 @@
 
 **Robust 5-Class Retinal Disease Grading on Unified 143k-Image Clinical Dataset**
 
-### **📌 Project Overview**
+### **Project Overview**
 
 G-Trans-DSAF is an advanced deep learning pipeline designed for high-precision grading of Diabetic Retinopathy (DR). The core innovation lies in its tri-hybrid architecture, which integrates spatial feature extraction (CNN), global contextual modeling (Transformer), and relational reasoning (Graph Neural Networks) to surpass the performance of standard monolithic models.
 
 The model is trained on a massive, unified dataset of 143,669 clinical images aggregated from EyePACS, APTOS, and Messidor, representing one of the most comprehensive evaluations of DR diagnostic reliability.
 
-### **🏗️ Architectural Innovation**
+### **Architectural Innovation**
 
 The system utilizes a Dual-Stream Adaptive Fusion (DSAF) strategy to resolve the "local-global" trade-off in medical imaging:
 
@@ -20,7 +20,7 @@ The system utilizes a Dual-Stream Adaptive Fusion (DSAF) strategy to resolve the
 
 **Orthogonal Constraint:** An Orthogonal Loss is applied between the CNN and Transformer streams to minimize feature redundancy, forcing the model to learn complementary representations.
 
-### **🔬 Technical Features**
+### **Technical Features**
 
 **Ordinal Regression:** Unlike standard classification, the model uses an ordinal target encoding to preserve the natural progression of DR (Grade 0 $\rightarrow$ 4).
 
@@ -30,7 +30,7 @@ The system utilizes a Dual-Stream Adaptive Fusion (DSAF) strategy to resolve the
 
 **Optimization:** AdamW optimizer with Cosine Annealing learning rate scheduling.
 
-### **📊 Dataset Specifications**
+### **Dataset Specifications**
 
 The model is validated on a Unified DR Dataset (v2):
 
@@ -42,14 +42,14 @@ The model is validated on a Unified DR Dataset (v2):
 
 **Task:** 5-Class Categorical Grading (No DR, Mild, Moderate, Severe, Proliferative).
 
-### **📈 Performance & Results**
+### **Performance & Results**
 
 The model's performance was evaluated using the Quadratic Weighted Kappa (QWK), the clinical gold standard for assessing agreement between medical experts.
 
 The results demonstrate expert-level diagnostic reliability, with the final model achieving a QWK of 0.9035. This is particularly significant as it surpasses the typical inter-rater agreement range for human ophthalmologists on the EyePACS and APTOS datasets.
 
 
-## 📈 Performance & Results
+## Performance & Results
 
 The model's performance was evaluated using the **Quadratic Weighted Kappa (QWK)**, the clinical gold standard for assessing agreement between medical experts. 
 
