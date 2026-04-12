@@ -46,7 +46,7 @@ The model is validated on a Unified DR Dataset (v2):
 
 The model's performance was evaluated using the Quadratic Weighted Kappa (QWK), the clinical gold standard for assessing agreement between medical experts.
 
-The results demonstrate expert-level diagnostic reliability, with the final model achieving a QWK of 0.9035. This is particularly significant as it surpasses the typical inter-rater agreement range for human ophthalmologists (generally cited between 0.82 – 0.86) on the EyePACS and APTOS datasets.
+The results demonstrate expert-level diagnostic reliability, with the final model achieving a QWK of 0.9035. This is particularly significant as it surpasses the typical inter-rater agreement range for human ophthalmologists on the EyePACS and APTOS datasets.
 
 
 ## 📈 Performance & Results
