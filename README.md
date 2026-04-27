@@ -20,6 +20,10 @@ The system utilizes a Dual-Stream Adaptive Fusion (DSAF) strategy to resolve the
 
 **Orthogonal Constraint:** An Orthogonal Loss is applied between the CNN and Transformer streams to minimize feature redundancy, forcing the model to learn complementary representations.
 
+<p align="center">
+  <img src="Architecture_Diagram.png" width="600" title="Graph-Reasoning-Hybrid-Fusion-for-Retinal-Disease-Diagnosis_Model Architecture">
+</p>
+
 ### **Technical Features**
 
 **Ordinal Regression:** Unlike standard classification, the model uses an ordinal target encoding to preserve the natural progression of DR (Grade 0 $\rightarrow$ 4).
