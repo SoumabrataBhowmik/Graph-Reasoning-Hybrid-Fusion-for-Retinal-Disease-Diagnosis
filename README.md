@@ -68,6 +68,9 @@ The results demonstrate **expert-level diagnostic reliability**, with the final 
 | **3** | **0.9035** | 
 
 ---
+<p align="center">
+  <img src="val_qwk_graph.png" width="600" title="val_qwk_graph.png">
+</p>
 
 ### **Technical Significance**
 * **Surpassing Human-Level Consensus:** Achieving a **0.90+ QWK** indicates that the G-Trans-DSAF architecture provides higher consistency in grading than standard multi-expert panels.
