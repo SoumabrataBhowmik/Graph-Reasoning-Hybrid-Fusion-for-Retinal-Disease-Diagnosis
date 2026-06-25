@@ -80,6 +80,8 @@ The results demonstrate **expert-level diagnostic reliability**, with the final 
 
 ## System Architecture
 
+### Detailed Computation Graph (G_Trans_DSAF)
+
 ```mermaid
 flowchart TD
     %% Node Class Definitions
