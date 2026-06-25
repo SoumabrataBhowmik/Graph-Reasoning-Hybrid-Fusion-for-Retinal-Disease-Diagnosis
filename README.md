@@ -21,7 +21,7 @@ The system utilizes a Dual-Stream Adaptive Fusion (DSAF) strategy to resolve the
 **Orthogonal Constraint:** An Orthogonal Loss is applied between the CNN and Transformer streams to minimize feature redundancy, forcing the model to learn complementary representations.
 
 <p align="center">
-  <img src="Architecture_Diagram.png" width="600" title="Graph-Reasoning-Hybrid-Fusion-for-Retinal-Disease-Diagnosis_Model Architecture">
+  <img src="Architecture_Diagram.png" width="600" title="Graph-Reasoning-Hybrid-Fusion-for-Retinal-Disease-Diagnosis_Model Architecture Overview">
 </p>
 
 ### **Technical Features**
@@ -76,3 +76,77 @@ The results demonstrate **expert-level diagnostic reliability**, with the final 
 * **Surpassing Human-Level Consensus:** Achieving a **0.90+ QWK** indicates that the G-Trans-DSAF architecture provides higher consistency in grading than standard multi-expert panels.
 * **Robustness to Multi-Source Noise:** Maintaining high performance on a **unified 143,669-image dataset** (EyePACS, APTOS, Messidor) proves the model's ability to generalize across different camera sensors, lighting conditions, and clinical protocols.
 * **Efficient Convergence:** The integration of the **Graph Reasoning Module** allowed the model to reach expert-level accuracy in just 3 epochs, demonstrating superior feature representation compared to standard CNN or Transformer backbones.
+
+
+## System Architecture
+
+```mermaid
+flowchart TD
+    %% Node Class Definitions
+    classDef dataNode fill:#f8f9fa,stroke:#dee2e6,stroke-width:2px,color:#212529,rx:4px,ry:4px
+    classDef prepNode fill:#e3f2fd,stroke:#90caf9,stroke-width:2px,color:#0d47a1,rx:4px,ry:4px
+    classDef transNode fill:#e8eaf6,stroke:#7986cb,stroke-width:2px,color:#283593,rx:4px,ry:4px
+    classDef cnnNode fill:#e8f5e9,stroke:#81c784,stroke-width:2px,color:#2e7d32,rx:4px,ry:4px
+    classDef graphNode fill:#fff8e1,stroke:#ffd54f,stroke-width:2px,color:#f57f17,rx:4px,ry:4px
+    classDef fusionNode fill:#ffebee,stroke:#e57373,stroke-width:2px,color:#c62828,rx:4px,ry:4px
+    
+    %% Global Edge styling
+    linkStyle default stroke:#78909c,stroke-width:2px
+
+    %% Input
+    Input[/"Input Image<br/>(384 × 384 × 3)"/]:::dataNode
+
+    %% Preprocessing
+    Preprocess("Preprocessing<br/>Resize (384) + Gaussian Blur Enhance<br/>Albumentations Augmentations"):::prepNode
+    Input ==> Preprocess
+
+    %% Dual Stream Subgraph
+    subgraph DualStream ["Dual-Stream Feature Extraction"]
+        direction TB
+        Split{"Split"}
+        
+        %% MaxViT Branch
+        MaxViT("MaxViT-Tiny Transformer<br/>(timm: maxvit_tiny_tf_384)"):::transNode
+        FeatA[/"Feature Map A<br/>(B, 512, H, W)"/]:::dataNode
+        NodesA("Flatten + Node Creation<br/>Nodes_A (B, N, 512)"):::transNode
+        
+        %% ResNet Branch
+        ResNet("ResNet18 CNN<br/>(timm: resnet18)"):::cnnNode
+        FeatB[/"Feature Map B<br/>(B, 512, H, W)"/]:::dataNode
+        Align("1×1 Conv<br/>Channel Align (→ 512)"):::cnnNode
+        NodesB("Flatten + Node Creation<br/>Nodes_B (B, N, 512)"):::cnnNode
+
+        Split ==> MaxViT
+        Split ==> ResNet
+
+        MaxViT ==> FeatA ==> NodesA
+        ResNet ==> FeatB ==> Align ==> NodesB
+    end
+
+    Preprocess ==> Split
+
+    %% Fusion
+    Fusion{"Feature Fusion<br/>(Nodes_A + Nodes_B) / 2"}:::fusionNode
+    NodesA ==> Fusion
+    NodesB ==> Fusion
+
+    %% Graph Reasoning Subgraph
+    subgraph GraphModule ["Graph Reasoning Module"]
+        direction TB
+        GraphOps{{"Graph Reasoning Module (k=8)<br/>• Pairwise Distance (cdist)<br/>• KNN Search<br/>• Attention Weighting: exp(-dist / sqrt(C))<br/>• Softmax + Mask<br/>• Aggregation (Attn × X)<br/>• Residual + Linear + LayerNorm"}}:::graphNode
+    end
+
+    Fusion ==> GraphOps
+
+    %% Output Head
+    GAP("Global Avg Pooling<br/>(B, N, 512 → B, 512)"):::transNode
+    FC("Fully Connected Layer<br/>Linear (512 → 4)"):::fusionNode
+    Output[/"Ordinal Output (4 logits)<br/>→ DR Grade (0–4)"/]:::dataNode
+
+    GraphOps ==> GAP ==> FC ==> Output
+
+    %% Loss Calculation
+    Loss{{"G_DSAFLoss<br/>BCEWithLogitsLoss + (0.1 × Orthogonal Loss)"}}:::fusionNode
+    Output -.->|"Logits"| Loss
+    NodesA -.->|"v_a (Pooled)"| Loss
+    NodesB -.->|"v_b (Pooled)"| Loss
